@@ -80,7 +80,7 @@ export default {
 }
 .list-view {
   text-align: left;
-  margin-top: 2em;
+  margin-top: 2em !important;
 }
 ::-webkit-scrollbar {
     width: 5px;

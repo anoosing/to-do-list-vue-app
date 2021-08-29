@@ -54,6 +54,6 @@ export default {
 th {
   position: sticky;
   top: 0;
-  background: lightgrey;
+  background: lightgrey !important;
 }
 </style>
