@@ -1,21 +1,30 @@
 <template>
   <div class="flex-row">
     <button class="btn btn-primary" v-on:click="!error && $emit('add-to-do')">+</button>
-    <input type="text" placeholder="Add new to do ..." :class="{ 'error' : error, '' : !error }" class="form-control" :value="newToDo" @change="$emit('update:newToDo', $event.target.value)" @keyup.enter="!error && $emit('add-to-do')" />
+    <input type="text" placeholder="Add new to do ..." :class="{ 'error' : error, '' : !error }" class="form-control" v-model="todotitle" @keyup.enter="!error && $emit('add-to-do')" />
   </div>
 </template>
 
 <script>
 export default {
   name: 'AddTodo',
-  props: ['newToDo'],
   data () {
     return {
       error: false
     }
   },
+  computed: {
+    todotitle: {
+      get () {
+        return this.$store.state.newToDo
+      },
+      set (value) {
+        this.$store.commit('updateNewToDo', value)
+      }
+    }
+  },
   watch: {
-    newToDo: function (val, prevval) {
+    todotitle: function (val, prevval) {
       if (val && val.length < 3) {
         this.error = true
       } else {

@@ -2,38 +2,74 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
-export default new Vuex.Store({
+export const store = new Vuex.Store({
   state: {
     newToDo: '',
-    toDoList: [
-      {
-        title: 'Breakfast',
-        status: true
-      },
-      {
-        title: 'Lunch',
-        status: false
-      }
-    ],
-    completedToDos: 1,
-    pendingToDos: 1
+    searchText: '',
+    toDoList: [],
+    actualToDoList: [],
+    completedToDos: 0,
+    pendingToDos: 0
   },
   mutations: {
     addToDo (state) {
       if (state.newToDo && !state.toDoList.some(val => val.title === state.newToDo)) {
-        state.toDoList.push({ title: state.newToDo, status: false })
+        state.toDoList.unshift({ title: state.newToDo, completed: false })
         state.newToDo = ''
         state.pendingToDos++
+        state.actualToDoList.unshift({ title: state.newToDo, completed: false })
       }
     },
     deleteToDo (state, todo) {
       state.toDoList.splice(state.toDoList.indexOf(todo), 1)
       state.completedToDos--
+      state.actualToDoList.splice(state.toDoList.indexOf(todo), 1)
     },
     completeToDo (state, todo) {
-      todo.status = true
+      todo.completed = true
       state.completedToDos++
       state.pendingToDos--
+    },
+    updateNewToDo (state, val) {
+      state.newToDo = val
+    },
+    updateSearchText (state, val) {
+      state.searchText = val
+      if (state.searchText) {
+        state.toDoList = state.actualToDoList.filter(val => val.title.toLowerCase().indexOf(state.searchText.toLowerCase()) !== -1)
+      } else {
+        state.toDoList = state.actualToDoList
+      }
+      state.completedToDos = state.toDoList.filter(todo => todo.completed).length
+      state.pendingToDos = state.toDoList.length - state.completedToDos
+    },
+    updateToDoList (state, val) {
+      state.toDoList = val
+      state.actualToDoList = val
+      state.completedToDos = state.toDoList.filter(todo => todo.completed).length
+      state.pendingToDos = state.toDoList.length - state.completedToDos
+    }
+  },
+  actions: {
+    async initToDoList ({ commit }) {
+      commit(
+        'updateToDoList',
+        await fetch('https://jsonplaceholder.typicode.com/todos', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+          .then(response => response.json())
+          .then(json => json)
+          .catch(error => console.error(error))
+      )
     }
   }
 })
+// in my vuex store file
+// store.watch((state) => state.toDoList, (oldValue, newValue) => {
+//   if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+//     state.actualToDoList = newValue
+//   }
+// })

@@ -3,11 +3,15 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import store from './store'
+import { store } from './store'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 Vue.config.productionTip = false
 
+function getInitRequest () {
+  store.dispatch('initToDoList')
+}
+getInitRequest()
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
