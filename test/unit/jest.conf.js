@@ -1,4 +1,4 @@
-const path = require('path')
+ const path = require('path')
 
 module.exports = {
   verbose: true,
@@ -21,7 +21,7 @@ module.exports = {
   ],
   snapshotSerializers: ['<rootDir>/node_modules/jest-serializer-vue'],
   setupFiles: ['<rootDir>/test/unit/setup'],
-  coverageDirectory: '<rootDir>/test/unit/coverage',
+  coverageDirectory: '<rootDir>/coverage',
   collectCoverageFrom: [
     'src/**/*.{js,vue}',
     '!src/main.js',
@@ -29,5 +29,5 @@ module.exports = {
     '!**/node_modules/**'
   ],
   collectCoverage: true,
-  coverageReporters: ['json', 'lcov', 'text', 'clover']
+  coverageReporters: ['json', 'text', 'lcov', 'clover']
 }
